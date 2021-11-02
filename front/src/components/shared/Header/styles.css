@@ -1,0 +1,29 @@
+.header-container {
+    background-color: #161616;
+    height: 6rem;
+    margin-bottom: 2rem;
+}
+
+.logo-title-container {
+    display: flex;
+}
+
+.logo {
+    width: 5rem;
+    height: 4.8rem;
+    margin-right: 1rem;
+}
+
+.title {
+    text-transform: uppercase;
+    font-size: 2.5rem;
+    color: white;
+    font-weight: bold;
+    margin-top: .5rem;
+}
+
+.button-salir {
+    margin-top: 1.5rem;
+    font-weight: bold !important;
+    font-size: 1.3rem !important;
+}

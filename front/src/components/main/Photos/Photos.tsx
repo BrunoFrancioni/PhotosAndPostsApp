@@ -1,53 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Container, Row, Spinner, Table } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
+import { Col, Container, Row, Spinner, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import { IPost } from '../../../core/interfaces/IPosts';
-import PostsService from '../../../core/services/PostsService';
-import { logOutAction } from '../../../core/store/user/user.slice';
-import Header from '../../shared/Header/Header';
-import DetailsPostModal from '../../shared/Modals/Posts/DetailsPostModal/DetailsPostModal';
+
 import Paginator from '../../shared/Paginator/Paginator';
+import Header from '../../shared/Header/Header';
 import Sidebar from '../../shared/Sidebar/Sidebar';
+import { IPhoto } from '../../../core/interfaces/IPhotos';
+import PhotosService from '../../../core/services/PhotosService';
 
 import './styles.css';
+import { logOutAction } from '../../../core/store/user/user.slice';
+import DetailsPhotoModal from '../../shared/Modals/Photos/DetailsPhotoModal/DetailsPhotoModal';
 
-const Posts = () => {
+const Photos = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [actualPage, setActualPage] = useState<number>(1);
     const [sizePage, setSizePage] = useState<number>(10);
-    const [posts, setPosts] = useState<IPost[]>([]);
+    const [photos, setPhotos] = useState<IPhoto[]>([]);
     const [totalResults, setTotalResults] = useState<number>(0);
     const [searchWithError, setSearchWithError] = useState<boolean>(false);
     const [showDetailsModal, setShowDetailsModal] = useState<boolean>(false);
-    const [activePost, setActivePost] = useState<string | null>(null);
+    const [activePhoto, setActivePhoto] = useState<string | null>(null);
 
     const dispatch = useDispatch();
-    const postsService: PostsService = new PostsService();
+    const photosService: PhotosService = new PhotosService();
 
     useEffect(() => {
         (async () => {
-            await getPosts();
+            await getPhotos();
         })();
     }, []);
 
     useEffect(() => {
         (async () => {
-            await getPosts();
+            await getPhotos();
         })();
     }, [actualPage]);
 
-    const getPosts = async () => {
+    const getPhotos = async () => {
         try {
-            const result = await postsService.getPosts(actualPage, sizePage);
+            const result = await photosService.getPhotos(actualPage, sizePage);
 
             setTotalResults(result.data.totalResults);
-            (result.data.posts) ? setPosts(result.data.posts) : setPosts([]);
+            (result.data.photos) ? setPhotos(result.data.photos) : setPhotos([]);
             setSearchWithError(false);
 
             setLoading(false);
         } catch (e: any) {
-            console.log('Error getting posts', e);
+            console.log('Error getting photos', e);
 
             if (e.response.status === 401) {
                 Swal.fire({
@@ -63,7 +64,7 @@ const Posts = () => {
                 });
             } else {
                 setTotalResults(0);
-                setPosts([]);
+                setPhotos([]);
                 setSearchWithError(true);
                 setLoading(false);
             }
@@ -73,7 +74,7 @@ const Posts = () => {
     const changePage = (number: number) => {
         if (actualPage !== number) {
             setTotalResults(0);
-            setPosts([]);
+            setPhotos([]);
             setSearchWithError(false);
             setLoading(true);
             setActualPage(number);
@@ -81,13 +82,13 @@ const Posts = () => {
     }
 
     const handleDetailsClick = (id: string) => {
-        setActivePost(id);
+        setActivePhoto(id);
         setShowDetailsModal(true);
     }
 
     const handleCloseDetailsModal = () => {
         setShowDetailsModal(false);
-        setActivePost(null);
+        setActivePhoto(null);
     }
 
     return (
@@ -101,7 +102,7 @@ const Posts = () => {
                     </Col>
 
                     <Col>
-                        <h1>Posts</h1>
+                        <h1>Photos</h1>
                         <hr />
 
                         {
@@ -124,20 +125,20 @@ const Posts = () => {
 
                         {
                             !loading && totalResults === 0 &&
-                            posts === [] && !searchWithError &&
+                            photos === [] && !searchWithError &&
                             <Container fluid>
                                 <p>No se han encontrado resultados</p>
                             </Container>
                         }
 
                         {
-                            !loading && totalResults != 0 &&
-                            posts !== [] && !searchWithError &&
+                            !loading && totalResults !== 0 &&
+                            photos !== [] && !searchWithError &&
                             <Container fluid>
                                 <Table striped bordered hover>
                                     <thead>
                                         <tr>
-                                            <th>User Id</th>
+                                            <th>Album Id</th>
                                             <th>Title</th>
                                             <th>Options</th>
                                         </tr>
@@ -145,17 +146,17 @@ const Posts = () => {
 
                                     <tbody>
                                         {
-                                            posts.map((post) => {
+                                            photos.map((photo) => {
                                                 return (
-                                                    <tr key={post.id}>
-                                                        <td>{post.userId}</td>
-                                                        <td>{post.title}</td>
+                                                    <tr key={photo.id}>
+                                                        <td>{photo.albumId}</td>
+                                                        <td>{photo.title}</td>
                                                         <td>
                                                             <div className="container-options">
-                                                                <span title="See post details" className="option-span">
+                                                                <span title="See photo details" className="option-span">
                                                                     <i
                                                                         className="fas fa-info-circle option"
-                                                                        onClick={() => handleDetailsClick(String(post.id))}
+                                                                        onClick={() => handleDetailsClick(String(photo.id))}
                                                                     ></i>
                                                                 </span>
                                                             </div>
@@ -178,9 +179,9 @@ const Posts = () => {
 
                         {
                             showDetailsModal &&
-                            <DetailsPostModal
+                            <DetailsPhotoModal
                                 showModal={showDetailsModal}
-                                id={activePost}
+                                id={activePhoto}
                                 handleClose={handleCloseDetailsModal}
                             />
                         }
@@ -191,4 +192,4 @@ const Posts = () => {
     )
 }
 
-export default Posts;
+export default Photos;

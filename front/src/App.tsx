@@ -8,6 +8,9 @@ import { IUser } from './core/interfaces/IUsers';
 import { logInAction } from './core/store/user/user.slice';
 import ProtectedRoute from './components/shared/ProtectedRoute/ProtectedRoute';
 import Posts from './components/main/Posts/Posts';
+import Login from './components/main/Login/Login';
+import Photos from './components/main/Photos/Photos';
+import Signup from './components/main/Signup/Signup';
 
 function App() {
   const user = useSelector(selectUser);
@@ -25,9 +28,23 @@ function App() {
     <Router>
       <div className="main-container">
         <Switch>
-          <Route path="/login">
-
+          <Route path='/login'>
+            <Login
+              userLogguedIn={(token: string, user: IUser) => userLoggedIn(token, user)}
+              userLogged={user.logged}
+            />
           </Route>
+
+          <Route path='/signup'>
+            <Signup
+              userLogged={user.logged}
+            />
+          </Route>
+
+          <ProtectedRoute
+            component={Photos}
+            path='/photos'
+          />
           
           <ProtectedRoute
             component={Posts}

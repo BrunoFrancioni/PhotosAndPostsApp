@@ -131,7 +131,7 @@ const Posts = () => {
                         }
 
                         {
-                            !loading && totalResults != 0 &&
+                            !loading && totalResults !== 0 &&
                             posts !== [] && !searchWithError &&
                             <Container fluid>
                                 <Table striped bordered hover>

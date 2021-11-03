@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, useHistory } from 'react-router-dom';
 import { ICreateUsers } from '../../../core/interfaces/IUsers';
@@ -11,11 +11,7 @@ import { selectUser } from '../../../core/store/store';
 
 import './styles.css';
 
-interface Props {
-    userLogged: boolean;
-}
-
-const Signup = (props: Props) => {
+const Signup = () => {
     const usersService: UsersService = new UsersService();
 
     const history = useHistory();
@@ -30,16 +26,6 @@ const Signup = (props: Props) => {
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (user.logged) {
-            history.push('/');
-        }
-    }, []);
-
-    if (props.userLogged) {
-        return <Redirect to="/" />;
-    }
-
     const validationSchema = yup.object().shape({
         name_lastname: yup.string().required(),
         email: yup.string().required("Required").email("Enter a valid email"),
@@ -50,7 +36,7 @@ const Signup = (props: Props) => {
         setLoading(true);
 
         try {
-            const result = await usersService.createUser(values);
+            await usersService.createUser(values);
 
             history.push('/login');
         } catch (e: any) {
@@ -72,6 +58,10 @@ const Signup = (props: Props) => {
 
             setLoading(false);
         }
+    }
+
+    if (user.logged) {
+        return <Redirect to="/" />;
     }
 
     return (

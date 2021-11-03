@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Col, Nav, Row } from 'react-bootstrap';
 
+import './styles.css';
+
 const Sidebar = () => {
     let [activeWindow, setActiveWindow] = useState<string>(window.location.pathname);
 

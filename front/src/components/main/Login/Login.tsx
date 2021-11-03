@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import { Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
 import { Button, Card, Form, Spinner } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import { ILoginUser } from '../../../core/interfaces/IUsers';
@@ -8,18 +8,12 @@ import * as yup from 'yup';
 
 import './styles.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { Redirect, useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { selectUser } from '../../../core/store/store';
+import { logInAction } from '../../../core/store/user/user.slice';
 
-interface Props {
-    userLogguedIn: any;
-    userLogged: boolean;
-}
-
-const Login = (props: Props) => {
+const Login = () => {
     const usersService: UsersService = new UsersService();
-
-    const history = useHistory();
 
     const user = useSelector(selectUser);
     const dispatch = useDispatch();
@@ -30,16 +24,6 @@ const Login = (props: Props) => {
     }
 
     const [loading, setLoading] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (user.logged) {
-            history.push('/');
-        }
-    }, []);
-
-    if (props.userLogged) {
-        return <Redirect to="/" />;
-    }
 
     const validationSchema = yup.object().shape({
         email: yup.string().required("Required").email("Enter a valid email"),
@@ -52,7 +36,8 @@ const Login = (props: Props) => {
         try {
             const result = await usersService.loginUser(values);
 
-            props.userLogguedIn(result.data.token, result.data.user);
+            localStorage.setItem("token", result.data.token);
+            dispatch(logInAction({ logged: true, info: result.data.user }));
         } catch (e: any) {
             if (e.response.status === 400) {
                 Swal.fire({
@@ -72,6 +57,10 @@ const Login = (props: Props) => {
 
             setLoading(false);
         }
+    }
+
+    if (user.logged) {
+        return <Redirect to="/" />;
     }
 
     return (

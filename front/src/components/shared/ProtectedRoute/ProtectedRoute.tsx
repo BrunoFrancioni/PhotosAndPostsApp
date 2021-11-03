@@ -1,6 +1,6 @@
 import React from 'react';
-import { Redirect, Route, RouteProps } from "react-router-dom";
 import { useSelector } from 'react-redux';
+import { Redirect, Route, RouteProps } from "react-router-dom";
 import { selectUser } from '../../../core/store/store';
 
 const ProtectedRoute = ({ component: Component, path }: RouteProps) => {

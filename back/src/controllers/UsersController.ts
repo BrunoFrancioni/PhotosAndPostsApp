@@ -69,6 +69,8 @@ export class UsersController {
                     token: null,
                     user: null
                 }
+
+                return result;
             }
 
             const user = await this.Users.findOne({ email: loginUser.email }).exec();
@@ -76,7 +78,7 @@ export class UsersController {
             if (!user) {
                 const result: ILoginResult = {
                     result: false,
-                    message: 'Email or password incorrect.',
+                    message: 'User not found',
                     token: null,
                     user: null
                 }

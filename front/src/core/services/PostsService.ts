@@ -5,6 +5,9 @@ class PostsService {
 
     public async getPosts(page: number = 1, size: number = 10) {
         return await API.get(this.path, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
             params: {
                 page: page,
                 size: size
@@ -13,7 +16,11 @@ class PostsService {
     }
 
     public async getPostById(id: string) {
-        return await API.get(this.path + `/${id}`);
+        return await API.get(this.path + `/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
     }
 }
 

@@ -8,7 +8,6 @@ import { logOutAction } from '../../../core/store/user/user.slice';
 import Header from '../../shared/Header/Header';
 import DetailsPostModal from '../../shared/Modals/Posts/DetailsPostModal/DetailsPostModal';
 import Paginator from '../../shared/Paginator/Paginator';
-import Sidebar from '../../shared/Sidebar/Sidebar';
 
 import './styles.css';
 
@@ -96,12 +95,8 @@ const Posts = () => {
 
             <Container>
                 <Row>
-                    <Col md={2}>
-                        <Sidebar />
-                    </Col>
-
                     <Col>
-                        <h1>Posts</h1>
+                        <h1 style={{ textAlign: 'center' }}>Posts</h1>
                         <hr />
 
                         {
@@ -137,7 +132,7 @@ const Posts = () => {
                                 <Table striped bordered hover>
                                     <thead>
                                         <tr>
-                                            <th>User Id</th>
+                                            <th>Post Id</th>
                                             <th>Title</th>
                                             <th>Options</th>
                                         </tr>

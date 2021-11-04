@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 
 import Paginator from '../../shared/Paginator/Paginator';
 import Header from '../../shared/Header/Header';
-import Sidebar from '../../shared/Sidebar/Sidebar';
 import { IPhoto } from '../../../core/interfaces/IPhotos';
 import PhotosService from '../../../core/services/PhotosService';
 
@@ -97,12 +96,8 @@ const Photos = () => {
 
             <Container>
                 <Row>
-                    <Col md={2}>
-                        <Sidebar />
-                    </Col>
-
                     <Col>
-                        <h1>Photos</h1>
+                        <h1 style={{ textAlign: 'center' }}>Photos</h1>
                         <hr />
 
                         {

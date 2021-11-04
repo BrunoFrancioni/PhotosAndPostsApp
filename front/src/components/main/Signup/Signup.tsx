@@ -65,12 +65,11 @@ const Signup = () => {
     }
 
     return (
-        <div className="main-container">
+        <div className="main-card-container">
             <div className="card-container">
-                <Card className="card-login" style={{ width: '35rem', height: '40rem' }}>
+                <Card className="card-login">
                     <Card.Title>
                         <div className="center-container">
-                            <img src="logo512.png" alt="logo" className="logo" />
                             <h2>Signup</h2>
                         </div>
                     </Card.Title>
@@ -121,6 +120,8 @@ const Signup = () => {
                                                 tooltip
                                             >{errors.name_lastname}</Form.Control.Feedback>
                                         </Form.Group>
+
+                                        <br />
 
                                         <Form.Group
                                             controlId="email"
@@ -186,13 +187,13 @@ const Signup = () => {
 
                         {
                             loading &&
-                            <div className="spinner-container">
+                            <div className="spinner-container mb-2">
                                 <Spinner animation="border" role="status">
                                 </Spinner>
                             </div>
                         }
 
-                        <p>In case you dhave an account, login
+                        <p className="mt-3">In case you don't have an account, login&nbsp;
                             <a href="/login">
                                 here
                             </a>

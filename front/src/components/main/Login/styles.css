@@ -1,4 +1,5 @@
-.main-container {
+.main-card-container {
+    min-height: 100vh;
     background-color: #f4edf4;
 }
 
@@ -10,11 +11,6 @@
     transform: translate(-50%, -50%);
     border-radius: 1.5rem !important;
     box-shadow: 1px 1px 1px black, 0 0 25px black, 0 0 5px darkblue;
-}
-
-.card-login {
-    border-radius: 1.5rem !important;
-    padding: 3rem 1rem;
 }
 
 .center-container {

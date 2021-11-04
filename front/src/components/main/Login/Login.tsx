@@ -64,12 +64,11 @@ const Login = () => {
     }
 
     return (
-        <div className="main-container">
+        <div className="main-card-container">
             <div className="card-container">
-                <Card className="card-login" style={{ width: '35rem', height: '35rem' }}>
+                <Card className="card-login">
                     <Card.Title>
                         <div className="center-container">
-                            <img src="logo512.png" alt="logo" className="logo" />
                             <h2>Login</h2>
                         </div>
                     </Card.Title>
@@ -163,13 +162,13 @@ const Login = () => {
 
                         {
                             loading &&
-                            <div className="spinner-container">
+                            <div className="spinner-container mb-2">
                                 <Spinner animation="border" role="status">
                                 </Spinner>
                             </div>
                         }
 
-                        <p>In case you don't have an account, create it
+                        <p className="mt-2">In case you don't have an account, create it&nbsp;
                             <a href="/signup">
                                 here
                             </a>

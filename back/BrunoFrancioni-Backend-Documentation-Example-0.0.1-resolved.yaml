@@ -1,0 +1,333 @@
+---
+openapi: 3.0.0
+info:
+  title: Backend Documentation Example
+  version: 0.0.1
+servers:
+- url: https://virtserver.swaggerhub.com/BrunoFrancioni/Backend-Documentation-Example/0.0.1
+  description: SwaggerHub API Auto Mocking
+- url: http://localhost:8080
+  description: API
+paths:
+  /users/signup:
+    post:
+      summary: Permite crear un nuevo usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ICreateUsers'
+        required: true
+      responses:
+        "201":
+          description: Usuario creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "400":
+          description: El usuario ya existe o alguno de los campos llegó al servidor como nulo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+  /users/login:
+    post:
+      summary: Permite al usuario loguearse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ILoginUser'
+        required: true
+      responses:
+        "200":
+          description: Sesión iniciada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "400":
+          description: Email o contraseña incorrectos o alguno de los campos llegó al servidor como nulo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+  /posts:
+    get:
+      summary: Retorna una lista de posts y la cantidad de posts total que existe
+      parameters:
+      - name: page
+        in: query
+        description: Permite elegir qué pagina queremos
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: Permite elegir el tamaño de la página que queremos
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Retorna la lista de posts solicitada y la cantidad total existente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "401":
+          description: Retorna que el token enviado fue inválido, por lo tanto no tiene acceso a los datos solicitados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+      security:
+      - Authorization:
+        - read:posts
+  /posts/{id}:
+    get:
+      summary: Permite solicitar un post en específico
+      parameters:
+      - name: id
+        in: path
+        description: El id del post a retornar
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Retorna el post solicitado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        "401":
+          description: Retorna que el token enviado fue inválido, por lo tanto no tiene acceso a los datos solicitados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "400":
+          description: Retorna que el token enviado fue inválido, por lo tanto no tiene acceso a los datos solicitados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+      security:
+      - Authorization:
+        - read:posts
+  /photos:
+    get:
+      summary: Retorna una lista de fotos y la cantidad de fotos total que existe
+      parameters:
+      - name: page
+        in: query
+        description: Permite elegir qué pagina queremos
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: Permite elegir el tamaño de la página que queremos
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Retorna la lista de fotos solicitada y la cantidad total existente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_3'
+        "401":
+          description: Retorna que el token enviado fue inválido, por lo tanto no tiene acceso a los datos solicitados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+      security:
+      - Authorization:
+        - read:photos
+  /photos/{id}:
+    get:
+      summary: Permite solicitar una foto en específico
+      parameters:
+      - name: id
+        in: path
+        description: El id de la foto a retornar
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Retorna la foto solicitada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_4'
+        "401":
+          description: Retorna que el token enviado fue inválido, por lo tanto no tiene acceso a los datos solicitados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "400":
+          description: Retorna que el id no puede ser nulo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        "500":
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+      security:
+      - Authorization:
+        - read:photos
+components:
+  schemas:
+    IUser:
+      properties:
+        _id:
+          type: string
+        name_lastname:
+          type: string
+        email:
+          type: string
+      description: Representa la información de cada usuario
+    ICreateUsers:
+      required:
+      - email
+      - name_lastname
+      - password
+      properties:
+        name_lastname:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      description: Representa la información necesaria para crear un usuario
+    ILoginUser:
+      required:
+      - email
+      - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      description: Representa la información necesaria para crear un iniciar la sesión
+    IPost:
+      properties:
+        _id:
+          type: string
+        id:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+      description: Representa la información de cada post
+    IPhoto:
+      properties:
+        _id:
+          type: string
+        id:
+          type: string
+        album_id:
+          type: string
+        title:
+          type: string
+        url:
+          type: string
+        thumbnailUrl:
+          type: string
+      description: Representa la información de cada foto
+    inline_response_201:
+      type: object
+      properties:
+        message:
+          type: string
+    inline_response_200:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/IUser'
+    inline_response_200_1:
+      type: object
+      properties:
+        posts:
+          $ref: '#/components/schemas/IPost'
+        totalResults:
+          type: integer
+    inline_response_200_2:
+      type: object
+      properties:
+        post:
+          $ref: '#/components/schemas/IPost'
+    inline_response_200_3:
+      type: object
+      properties:
+        photos:
+          $ref: '#/components/schemas/IPhoto'
+        totalResults:
+          type: integer
+    inline_response_200_4:
+      type: object
+      properties:
+        photo:
+          $ref: '#/components/schemas/IPhoto'
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Header en el que se envía el Json Web Token
+      scheme: bearer
+      bearerFormat: JWT

@@ -102,7 +102,7 @@ const DetailsPostModal = (props: Props) => {
                             </Col>
 
                             <Col>
-                                <h4>User Id</h4>
+                                <h4>Post Id</h4>
                                 <p>{post.userId}</p>
                             </Col>
                         </Row>

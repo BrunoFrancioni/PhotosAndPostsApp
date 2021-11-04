@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Col, Container, Row, Spinner, Table } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 
@@ -11,38 +11,40 @@ import PhotosService from '../../../core/services/PhotosService';
 import './styles.css';
 import { logOutAction } from '../../../core/store/user/user.slice';
 import DetailsPhotoModal from '../../shared/Modals/Photos/DetailsPhotoModal/DetailsPhotoModal';
+import { selectPhotos } from '../../../core/store/store';
+import { changeActualPageAction, changeTotalResultsAction, setPhotosAction } from '../../../core/store/photos/photos.slice';
 
 const Photos = () => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [actualPage, setActualPage] = useState<number>(1);
     const [sizePage, setSizePage] = useState<number>(10);
-    const [photos, setPhotos] = useState<IPhoto[]>([]);
-    const [totalResults, setTotalResults] = useState<number>(0);
     const [searchWithError, setSearchWithError] = useState<boolean>(false);
     const [showDetailsModal, setShowDetailsModal] = useState<boolean>(false);
     const [activePhoto, setActivePhoto] = useState<string | null>(null);
 
     const dispatch = useDispatch();
     const photosService: PhotosService = new PhotosService();
+    const photos = useSelector(selectPhotos);
 
     useEffect(() => {
-        (async () => {
-            await getPhotos();
-        })();
+        if(photos.photos === []) {
+            (async () => {
+                await getPhotos();
+            })();
+        }
     }, []);
 
     useEffect(() => {
         (async () => {
             await getPhotos();
         })();
-    }, [actualPage]);
+    }, [photos.actualPage]);
 
     const getPhotos = async () => {
         try {
-            const result = await photosService.getPhotos(actualPage, sizePage);
+            const result = await photosService.getPhotos(photos.actualPage, sizePage);
 
-            setTotalResults(result.data.totalResults);
-            (result.data.photos) ? setPhotos(result.data.photos) : setPhotos([]);
+            dispatch(changeTotalResultsAction({ totalResults: result.data.totalResults }));
+            dispatch(setPhotosAction({ photos: result.data.photos }));
             setSearchWithError(false);
 
             setLoading(false);
@@ -62,8 +64,8 @@ const Photos = () => {
                     dispatch(logOutAction({ logged: false, info: null }));
                 });
             } else {
-                setTotalResults(0);
-                setPhotos([]);
+                dispatch(changeTotalResultsAction({ totalResults: 0 }));
+                dispatch(setPhotosAction({ photos: [] }));
                 setSearchWithError(true);
                 setLoading(false);
             }
@@ -71,12 +73,12 @@ const Photos = () => {
     }
 
     const changePage = (number: number) => {
-        if (actualPage !== number) {
-            setTotalResults(0);
-            setPhotos([]);
+        if (photos.actualPage !== number) {
+            dispatch(changeTotalResultsAction({ totalResults: 0 }));
+            dispatch(setPhotosAction({ photos: [] }));
             setSearchWithError(false);
             setLoading(true);
-            setActualPage(number);
+            dispatch(changeActualPageAction({ actualPage: number }));
         }
     }
 
@@ -119,16 +121,16 @@ const Photos = () => {
                         }
 
                         {
-                            !loading && totalResults === 0 &&
-                            photos === [] && !searchWithError &&
+                            !loading && photos.totalResults === 0 &&
+                            photos.photos === [] && !searchWithError &&
                             <Container fluid>
                                 <p>No se han encontrado resultados</p>
                             </Container>
                         }
 
                         {
-                            !loading && totalResults !== 0 &&
-                            photos !== [] && !searchWithError &&
+                            !loading && photos.totalResults !== 0 &&
+                            photos.photos !== [] && !searchWithError &&
                             <Container fluid>
                                 <Table striped bordered hover>
                                     <thead>
@@ -141,7 +143,7 @@ const Photos = () => {
 
                                     <tbody>
                                         {
-                                            photos.map((photo) => {
+                                            photos.photos.map((photo: IPhoto) => {
                                                 return (
                                                     <tr key={photo.id}>
                                                         <td>{photo.albumId}</td>
@@ -164,8 +166,8 @@ const Photos = () => {
                                 </Table>
 
                                 <Paginator
-                                    active={actualPage}
-                                    totalResults={totalResults}
+                                    active={photos.actualPage}
+                                    totalResults={photos.totalResults}
                                     sizePage={sizePage}
                                     changePage={changePage.bind(this)}
                                 />

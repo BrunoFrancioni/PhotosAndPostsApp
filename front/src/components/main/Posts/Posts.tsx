@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Container, Row, Spinner, Table } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Swal from 'sweetalert2';
 import { IPost } from '../../../core/interfaces/IPosts';
 import PostsService from '../../../core/services/PostsService';
+import { changeActualPageAction, changeTotalResultsAction, setPostsAction } from '../../../core/store/posts/posts.slice';
+import { selectPosts } from '../../../core/store/store';
 import { logOutAction } from '../../../core/store/user/user.slice';
 import Header from '../../shared/Header/Header';
 import DetailsPostModal from '../../shared/Modals/Posts/DetailsPostModal/DetailsPostModal';
@@ -13,35 +15,35 @@ import './styles.css';
 
 const Posts = () => {
     const [loading, setLoading] = useState<boolean>(true);
-    const [actualPage, setActualPage] = useState<number>(1);
     const [sizePage, setSizePage] = useState<number>(10);
-    const [posts, setPosts] = useState<IPost[]>([]);
-    const [totalResults, setTotalResults] = useState<number>(0);
     const [searchWithError, setSearchWithError] = useState<boolean>(false);
     const [showDetailsModal, setShowDetailsModal] = useState<boolean>(false);
     const [activePost, setActivePost] = useState<string | null>(null);
 
     const dispatch = useDispatch();
     const postsService: PostsService = new PostsService();
+    const posts = useSelector(selectPosts);
 
     useEffect(() => {
-        (async () => {
-            await getPosts();
-        })();
+        if(posts.posts === []) {
+            (async () => {
+                await getPosts();
+            })();
+        }
     }, []);
 
     useEffect(() => {
         (async () => {
             await getPosts();
         })();
-    }, [actualPage]);
+    }, [posts.actualPage]);
 
     const getPosts = async () => {
         try {
-            const result = await postsService.getPosts(actualPage, sizePage);
+            const result = await postsService.getPosts(posts.actualPage, sizePage);
 
-            setTotalResults(result.data.totalResults);
-            (result.data.posts) ? setPosts(result.data.posts) : setPosts([]);
+            dispatch(changeTotalResultsAction({ totalResults: result.data.totalResults }));
+            dispatch(setPostsAction({ posts: result.data.posts }));
             setSearchWithError(false);
 
             setLoading(false);
@@ -61,8 +63,8 @@ const Posts = () => {
                     dispatch(logOutAction({ logged: false, info: null }));
                 });
             } else {
-                setTotalResults(0);
-                setPosts([]);
+                dispatch(changeTotalResultsAction({ totalResults: 0 }));
+                dispatch(setPostsAction({ posts: [] }));
                 setSearchWithError(true);
                 setLoading(false);
             }
@@ -70,12 +72,12 @@ const Posts = () => {
     }
 
     const changePage = (number: number) => {
-        if (actualPage !== number) {
-            setTotalResults(0);
-            setPosts([]);
+        if (posts.actualPage !== number) {
+            dispatch(changeTotalResultsAction({ totalResults: 0 }));
+            dispatch(setPostsAction({ posts: [] }));
             setSearchWithError(false);
             setLoading(true);
-            setActualPage(number);
+            dispatch(changeActualPageAction({ actualPage: number }));
         }
     }
 
@@ -118,16 +120,16 @@ const Posts = () => {
                         }
 
                         {
-                            !loading && totalResults === 0 &&
-                            posts === [] && !searchWithError &&
+                            !loading && posts.totalResults === 0 &&
+                            posts.posts === [] && !searchWithError &&
                             <Container fluid>
                                 <p>No se han encontrado resultados</p>
                             </Container>
                         }
 
                         {
-                            !loading && totalResults !== 0 &&
-                            posts !== [] && !searchWithError &&
+                            !loading && posts.totalResults !== 0 &&
+                            posts.posts !== [] && !searchWithError &&
                             <Container fluid>
                                 <Table striped bordered hover>
                                     <thead>
@@ -140,7 +142,7 @@ const Posts = () => {
 
                                     <tbody>
                                         {
-                                            posts.map((post) => {
+                                            posts.posts.map((post: IPost) => {
                                                 return (
                                                     <tr key={post.id}>
                                                         <td>{post.userId}</td>
@@ -163,8 +165,8 @@ const Posts = () => {
                                 </Table>
 
                                 <Paginator
-                                    active={actualPage}
-                                    totalResults={totalResults}
+                                    active={posts.actualPage}
+                                    totalResults={posts.totalResults}
                                     sizePage={sizePage}
                                     changePage={changePage.bind(this)}
                                 />

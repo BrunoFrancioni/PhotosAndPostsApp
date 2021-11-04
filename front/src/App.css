@@ -39,4 +39,5 @@
 
 .main-container {
   background-color: #f4edf4;
+  min-height: 100vh;
 }

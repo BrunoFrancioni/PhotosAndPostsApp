@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Container, Nav, Row } from 'react-bootstrap';
+import { Button, Col, Container, Nav, Navbar, Row } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import Swal from 'sweetalert2';
 import { logOutAction } from '../../../core/store/user/user.slice';
@@ -25,40 +25,35 @@ const Header = () => {
     }
 
     return (
-        <div className="header-container">
+        <Navbar bg="dark" variant="dark" expand="lg" className="mb-3">
             <Container>
-                <Row>
-                    <Col lg={11}>
-                        <Nav>
-                            <Nav.Link href="/">
-                                <div className="logo-title-container">
-                                    <div>
-                                        <img
-                                            src="logo512.png"
-                                            alt="logo"
-                                            className="logo"
-                                        />
-                                    </div>
+                <Navbar.Brand href="/">
+                    <img
+                        src="logo512.png"
+                        alt="logo"
+                        className="logo"
+                    />
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="navbarScroll" />
 
-                                    <div>
-                                        <p className="title">Photos and Pictures App</p>
-                                    </div>
-                                </div>
-                            </Nav.Link>
-                        </Nav>
-                    </Col>
+                <Navbar.Collapse id="navbarScroll">
+                    <Nav
+                        className="me-auto my-2 my-lg-0"
+                        style={{ maxHeight: '100px' }}
+                        navbarScroll
+                    >
+                        <Nav.Link href="/"><i className="fas fa-book icon"></i><b>&nbsp;Posts</b></Nav.Link>
+                        <Nav.Link href="/photos"><i className="fas fa-camera-retro icon"></i><b>&nbsp;Photos</b></Nav.Link>
+                    </Nav>
 
-                    <Col>
-                        <Button
-                            variant="danger"
-                            size="lg"
-                            className="button-salir float-end"
-                            onClick={handleLogOut}
-                        >Log out</Button>
-                    </Col>
-                </Row>
+                    <Button
+                        variant="danger"
+                        size="lg"
+                        onClick={handleLogOut}
+                    >Log out</Button>
+                </Navbar.Collapse>
             </Container>
-        </div>
+        </Navbar>
     )
 }
 
